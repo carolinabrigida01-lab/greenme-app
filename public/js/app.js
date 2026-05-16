@@ -562,17 +562,21 @@ async function autoLoginDevelopment() {
         loadDashboard();
     } catch (error) {
         console.error('Auto-login error:', error);
-        showLogin();
+        // Even if login fails, show app
+        showApp();
     }
 }
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-    // Auto-login as admin (always in development)
+    // Always show app immediately
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').style.display = 'block';
+    
+    // Then do auto-login in background
     if (!authToken) {
         autoLoginDevelopment();
     } else {
-        showApp();
         loadDashboard();
     }
 
