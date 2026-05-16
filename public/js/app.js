@@ -568,17 +568,12 @@ async function autoLoginDevelopment() {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-    // In development, auto-login as admin
-    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
-    if (isDevelopment && !authToken) {
-        // Auto-login in development
+    // Auto-login as admin (always in development)
+    if (!authToken) {
         autoLoginDevelopment();
-    } else if (authToken && currentUser) {
+    } else {
         showApp();
         loadDashboard();
-    } else {
-        showLogin();
     }
 
     // Login form
