@@ -9,27 +9,37 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email e password sono richiesti' });
+    if (!email) {
+      return res.status(400).json({ error: 'Email è richiesta' });
     }
 
     const employee = findByEmail(email);
     
     if (!employee) {
-      return res.status(401).json({ error: 'Credenziali non valide' });
+      return res.status(401).json({ error: 'Email non trovata' });
     }
 
-    const validPassword = await bcrypt.compare(password, employee.password);
+    // In development, skip password check
+    const isDevelopment = process.env.NODE_ENV !== 'production';
     
-    if (!validPassword) {
-      return res.status(401).json({ error: 'Credenziali non valide' });
+    if (!isDevelopment) {
+      // In production, check password
+      if (!password) {
+        return res.status(400).json({ error: 'Password è richiesta' });
+      }
+      
+      const validPassword = await bcrypt.compare(password, employee.password);
+      
+      if (!validPassword) {
+        return res.status(401).json({ error: 'Password non valida' });
+      }
     }
 
     const token = jwt.sign(
-      { 
-        id: employee.id, 
-        email: employee.email, 
-        role: employee.role 
+      {
+        id: employee.id,
+        email: employee.email,
+        role: employee.role
       },
       process.env.JWT_SECRET || 'default_secret',
       { expiresIn: '24h' }
