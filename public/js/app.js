@@ -545,10 +545,36 @@ function closeModal(modalId) {
     if (form) form.reset();
 }
 
+// Auto-login for development
+async function autoLoginDevelopment() {
+    try {
+        const data = await apiCall('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email: 'admin@rm-architettura.it' })
+        });
+
+        authToken = data.token;
+        currentUser = data.employee;
+        localStorage.setItem('authToken', authToken);
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+        showApp();
+        loadDashboard();
+    } catch (error) {
+        console.error('Auto-login error:', error);
+        showLogin();
+    }
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if user is logged in
-    if (authToken && currentUser) {
+    // In development, auto-login as admin
+    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    if (isDevelopment && !authToken) {
+        // Auto-login in development
+        autoLoginDevelopment();
+    } else if (authToken && currentUser) {
         showApp();
         loadDashboard();
     } else {
