@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenMe - RM Architettura</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo">🌱</div>
+                <h1>GreenMe</h1>
+                <p>RM Architettura e Consulenza Bandi</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="tuo@email.it">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary">Accedi</button>
+                <div id="loginError" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App Screen -->
+    <div id="appScreen" class="screen">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <span class="logo">🌱</span>
+                <span class="brand-name">GreenMe</span>
+            </div>
+            <div class="nav-user">
+                <span id="userName" class="user-name"></span>
+                <span id="userPoints" class="user-points">0 pts</span>
+                <button id="logoutBtn" class="btn-icon" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-container">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <ul class="nav-menu">
+                    <li class="nav-item active" data-page="dashboard">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </li>
+                    <li class="nav-item" data-page="carbon">
+                        <i class="fas fa-leaf"></i>
+                        <span>Carbon Footprint</span>
+                    </li>
+                    <li class="nav-item" data-page="volunteering">
+                        <i class="fas fa-hands-helping"></i>
+                        <span>Volontariato</span>
+                    </li>
+                    <li class="nav-item" data-page="gamification">
+                        <i class="fas fa-trophy"></i>
+                        <span>Gamification</span>
+                    </li>
+                    <li class="nav-item" data-page="leaderboard">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Classifica</span>
+                    </li>
+                    <li class="nav-item" data-page="profile">
+                        <i class="fas fa-user"></i>
+                        <span>Profilo</span>
+                    </li>
+                </ul>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="content">
+                <!-- Dashboard Page -->
+                <div id="dashboardPage" class="page active">
+                    <h2>Dashboard</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🌍</div>
+                            <div class="stat-info">
+                                <h3 id="totalCO2">0 kg</h3>
+                                <p>CO2 Risparmiata</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🤝</div>
+                            <div class="stat-info">
+                                <h3 id="totalHours">0 ore</h3>
+                                <p>Volontariato</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⭐</div>
+                            <div class="stat-info">
+                                <h3 id="totalBadges">0</h3>
+                                <p>Badge Guadagnati</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏆</div>
+                            <div class="stat-info">
+                                <h3 id="userRank">#-</h3>
+                                <p>Posizione</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="card">
+                            <h3>Attività Recenti</h3>
+                            <div id="recentActivities" class="activity-list"></div>
+                        </div>
+                        <div class="card">
+                            <h3>Sfide Attive</h3>
+                            <div id="activeChallenges" class="challenges-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carbon Footprint Page -->
+                <div id="carbonPage" class="page">
+                    <h2>Carbon Footprint</h2>
+                    <div class="page-actions">
+                        <button id="addCarbonBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Aggiungi Spostamento
+                        </button>
+                    </div>
+
+                    <div class="carbon-stats">
+                        <div class="stat-card">
+                            <h4>CO2 Emessa</h4>
+                            <p id="carbonEmitted">0 kg</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>CO2 Risparmiata</h4>
+                            <p id="carbonSaved">0 kg</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Distanza Totale</h4>
+                            <p id="carbonDistance">0 km</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Trasporti Sostenibili</h4>
+                            <p id="carbonSustainable">0%</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Storico Spostamenti</h3>
+                        <div id="carbonEntries" class="entries-list"></div>
+                    </div>
+                </div>
+
+                <!-- Volunteering Page -->
+                <div id="volunteeringPage" class="page">
+                    <h2>Volontariato</h2>
+                    <div class="page-actions">
+                        <button id="addVolunteerBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Aggiungi Attività
+                        </button>
+                    </div>
+
+                    <div class="volunteer-stats">
+                        <div class="stat-card">
+                            <h4>Ore Totali</h4>
+                            <p id="volunteerHours">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Attività</h4>
+                            <p id="volunteerActivities">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Verificate</h4>
+                            <p id="volunteerVerified">0</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Storico Attività</h3>
+                        <div id="volunteerEntries" class="entries-list"></div>
+                    </div>
+                </div>
+
+                <!-- Gamification Page -->
+                <div id="gamificationPage" class="page">
+                    <h2>Gamification</h2>
+                    
+                    <div class="card">
+                        <h3>I Miei Badge</h3>
+                        <div id="badgesList" class="badges-grid"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Sfide</h3>
+                        <div id="challengesList" class="challenges-grid"></div>
+                    </div>
+                </div>
+
+                <!-- Leaderboard Page -->
+                <div id="leaderboardPage" class="page">
+                    <h2>Classifica</h2>
+                    
+                    <div class="leaderboard-filters">
+                        <button class="filter-btn active" data-type="points">Punti</button>
+                        <button class="filter-btn" data-type="co2">CO2 Risparmiata</button>
+                        <button class="filter-btn" data-type="volunteer">Ore Volontariato</button>
+                    </div>
+
+                    <div class="card">
+                        <div id="leaderboardList" class="leaderboard-list"></div>
+                    </div>
+                </div>
+
+                <!-- Profile Page -->
+                <div id="profilePage" class="page">
+                    <h2>Profilo</h2>
+                    <div class="profile-container">
+                        <div class="card">
+                            <h3>Informazioni Personali</h3>
+                            <div id="profileInfo" class="profile-info"></div>
+                        </div>
+                        <div class="card">
+                            <h3>Statistiche</h3>
+                            <div id="profileStats" class="profile-stats"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Carbon Entry -->
+    <div id="carbonModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Aggiungi Spostamento</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="carbonForm">
+                <div class="form-group">
+                    <label for="carbonDate">Data</label>
+                    <input type="date" id="carbonDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="transportMode">Mezzo di Trasporto</label>
+                    <select id="transportMode" required>
+                        <option value="">Seleziona...</option>
+                        <option value="car">🚗 Auto</option>
+                        <option value="motorcycle">🏍️ Moto</option>
+                        <option value="bus">🚌 Autobus</option>
+                        <option value="train">🚆 Treno</option>
+                        <option value="bike">🚴 Bicicletta</option>
+                        <option value="walk">🚶 A Piedi</option>
+                        <option value="electric_car">⚡ Auto Elettrica</option>
+                        <option value="carpool">👥 Carpooling</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="distance">Distanza (km)</label>
+                    <input type="number" id="distance" step="0.1" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="isCommute">
+                        Spostamento casa-lavoro
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="carbonNotes">Note (opzionale)</label>
+                    <textarea id="carbonNotes" rows="3"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary modal-close">Annulla</button>
+                    <button type="submit" class="btn btn-primary">Salva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Volunteer Activity -->
+    <div id="volunteerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Aggiungi Attività di Volontariato</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="volunteerForm">
+                <div class="form-group">
+                    <label for="volunteerDate">Data</label>
+                    <input type="date" id="volunteerDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="activityType">Tipo di Attività</label>
+                    <select id="activityType" required>
+                        <option value="">Seleziona...</option>
+                        <option value="street_cleaning">🧹 Pulizia Strade</option>
+                        <option value="green_planting">🌳 Piantumazione Aree Verdi</option>
+                        <option value="urban_decor">🏛️ Cura Decoro Urbano</option>
+                        <option value="park_maintenance">🌲 Manutenzione Parchi</option>
+                        <option value="graffiti_removal">🎨 Rimozione Graffiti</option>
+                        <option value="community_garden">🥕 Orto Comunitario</option>
+                        <option value="other">📋 Altro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="volunteerHours">Ore</label>
+                    <input type="number" id="volunteerHours" step="0.5" min="0.5" max="24" required>
+                </div>
+                <div class="form-group">
+                    <label for="volunteerLocation">Luogo</label>
+                    <input type="text" id="volunteerLocation" value="Pavia" required>
+                </div>
+                <div class="form-group">
+                    <label for="volunteerDescription">Descrizione</label>
+                    <textarea id="volunteerDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="volunteerPhotos">Foto (opzionale)</label>
+                    <input type="file" id="volunteerPhotos" accept="image/*" multiple>
+                    <small>Massimo 5 foto, 5MB ciascuna</small>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary modal-close">Annulla</button>
+                    <button type="submit" class="btn btn-primary">Salva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
