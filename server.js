@@ -7,6 +7,9 @@ require('dotenv').config();
 // Import and initialize database
 const { db, initializeDatabase } = require('./data/database');
 
+// Force re-initialize database to ensure sample data is loaded
+initializeDatabase();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
