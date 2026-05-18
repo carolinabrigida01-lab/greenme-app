@@ -168,7 +168,7 @@ async function loadDashboard() {
 
         // Recent activities
         const activitiesHtml = [];
-        overview.recentActivities.carbon.slice(0, 3).forEach(entry => {
+        (overview.recentActivities?.carbon || []).slice(0, 3).forEach(entry => {
             activitiesHtml.push(`
                 <div class="activity-item">
                     <h4>🚗 Spostamento - ${entry.transportMode}</h4>
@@ -180,7 +180,7 @@ async function loadDashboard() {
                 </div>
             `);
         });
-        overview.recentActivities.volunteer.slice(0, 2).forEach(activity => {
+        (overview.recentActivities?.volunteer || []).slice(0, 2).forEach(activity => {
             activitiesHtml.push(`
                 <div class="activity-item">
                     <h4>🤝 ${activity.activityName}</h4>
@@ -198,7 +198,7 @@ async function loadDashboard() {
             : '<div class="empty-state"><i class="fas fa-inbox"></i><p>Nessuna attività recente</p></div>';
 
         // Active challenges
-        const challengesHtml = overview.activeChallenges.map(challenge => `
+        const challengesHtml = (overview.activeChallenges || []).map(challenge => `
             <div class="challenge-item">
                 <h4>${challenge.title}</h4>
                 <p>${challenge.description}</p>
