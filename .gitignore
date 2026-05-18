@@ -109,6 +109,9 @@ dist
 public/uploads/*
 !public/uploads/.gitkeep
 
+# Database storage (local data persistence)
+data/db-storage.json
+
 # OS files
 .DS_Store
 Thumbs.db
