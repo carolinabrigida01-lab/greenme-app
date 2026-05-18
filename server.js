@@ -4,6 +4,9 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
+// Import and initialize database
+const { db, initializeDatabase } = require('./data/database');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -52,6 +55,10 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`🌱 GreenMe Server in esecuzione su http://localhost:${PORT}`);
   console.log(`📊 Dashboard disponibile su http://localhost:${PORT}`);
+  console.log(`👥 Database inizializzato con ${db.employees.length} dipendenti`);
+  console.log(`🚴 ${db.carbonFootprintEntries.length} tracciamenti carbon footprint`);
+  console.log(`🤝 ${db.volunteeringActivities.length} attività di volontariato`);
+  console.log(`🏆 ${db.badges.length} badge disponibili`);
 });
 
 module.exports = app;
