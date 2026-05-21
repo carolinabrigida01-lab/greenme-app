@@ -1,13 +1,7 @@
-// In-memory database simulation with sample data and file persistence
+// In-memory database simulation with sample data
 // In production, this would be replaced with a real database (PostgreSQL, MongoDB, etc.)
 
-const fs = require('fs');
-const path = require('path');
-
-const DB_FILE = path.join(__dirname, 'db-storage.json');
-
-// Load data from file or initialize empty
-let db = {
+const db = {
   employees: [],
   carbonFootprintEntries: [],
   volunteeringActivities: [],
@@ -16,34 +10,6 @@ let db = {
   employeeBadges: [],
   leaderboard: []
 };
-
-// Load existing data from file
-function loadDatabase() {
-  try {
-    if (fs.existsSync(DB_FILE)) {
-      const data = fs.readFileSync(DB_FILE, 'utf8');
-      const loadedDb = JSON.parse(data);
-      // Only load if there's actual data
-      if (loadedDb.employees && loadedDb.employees.length > 0) {
-        db = loadedDb;
-        console.log('📂 Database caricato da file con', db.employees.length, 'dipendenti');
-        return true;
-      }
-    }
-  } catch (error) {
-    console.error('Errore nel caricamento del database:', error);
-  }
-  return false;
-}
-
-// Save data to file
-function saveDatabase() {
-  try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), 'utf8');
-  } catch (error) {
-    console.error('Errore nel salvataggio del database:', error);
-  }
-}
 
 // Initialize with sample data
 function initializeDatabase() {
@@ -460,7 +426,6 @@ function create(collection, data) {
     createdAt: new Date().toISOString()
   };
   db[collection].push(newItem);
-  saveDatabase();
   return newItem;
 }
 
@@ -472,7 +437,6 @@ function update(collection, id, data) {
       ...data,
       updatedAt: new Date().toISOString()
     };
-    saveDatabase();
     return db[collection][index];
   }
   return null;
@@ -481,9 +445,7 @@ function update(collection, id, data) {
 function deleteItem(collection, id) {
   const index = db[collection].findIndex(item => item.id === id);
   if (index !== -1) {
-    const deleted = db[collection].splice(index, 1)[0];
-    saveDatabase();
-    return deleted;
+    return db[collection].splice(index, 1)[0];
   }
   return null;
 }
@@ -492,14 +454,8 @@ function getAll(collection) {
   return db[collection];
 }
 
-// Initialize database on load
-// Try to load from file first, if empty initialize with sample data
-if (!loadDatabase()) {
-  console.log('🔄 Inizializzazione database con dati di esempio...');
-  initializeDatabase();
-  saveDatabase();
-  console.log('💾 Database salvato su file');
-}
+// Initialize database on load - ALWAYS initialize with sample data
+initializeDatabase();
 
 module.exports = {
   db,
@@ -510,9 +466,7 @@ module.exports = {
   update,
   deleteItem,
   getAll,
-  initializeDatabase,
-  saveDatabase,
-  loadDatabase
+  initializeDatabase
 };
 
 // Made with Bob
