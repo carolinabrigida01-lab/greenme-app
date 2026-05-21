@@ -79,6 +79,24 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+
+.login-hint {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.login-hint p {
+    margin: 5px 0;
+    font-size: 13px;
+    color: var(--text-color);
+}
+
+.login-hint strong {
+    color: var(--dark-color);
+}
 }
 
 .form-group {
