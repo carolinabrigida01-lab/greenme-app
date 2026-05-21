@@ -138,6 +138,13 @@ function updateUserInfo() {
 
 // Page Navigation
 function showPage(pageName) {
+    // Check if user is logged in
+    if (!authToken) {
+        console.log('Waiting for auto-login to complete...');
+        setTimeout(() => showPage(pageName), 500);
+        return;
+    }
+
     // Hide all pages
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
