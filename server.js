@@ -53,7 +53,7 @@ app.use((req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🌱 GreenMe Server in esecuzione su http://localhost:${PORT}`);
+  console.log(`🌱 GreenMates Server in esecuzione su http://localhost:${PORT}`);
   console.log(`📊 Dashboard disponibile su http://localhost:${PORT}`);
   console.log(`👥 Database inizializzato con ${db.employees.length} dipendenti`);
   console.log(`🚴 ${db.carbonFootprintEntries.length} tracciamenti carbon footprint`);

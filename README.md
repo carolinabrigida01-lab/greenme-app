@@ -1,8 +1,8 @@
-# GreenMe - Employee Sustainability & Volunteering App
+# GreenMates - Employee Sustainability & Volunteering App
 
 **Applicazione di Gamification per RM Architettura e Consulenza Bandi (Pavia)**
 
-GreenMe è un'applicazione web innovativa progettata per misurare e incentivare comportamenti sostenibili e attività di volontariato tra i dipendenti, supportando la transizione dalla rendicontazione narrativa alla misurazione analitica tramite gamification.
+GreenMates è un'applicazione web innovativa progettata per misurare e incentivare comportamenti sostenibili e attività di volontariato tra i dipendenti, supportando la transizione dalla rendicontazione narrativa alla misurazione analitica tramite gamification.
 
 ## 📋 Indice
 
@@ -87,7 +87,7 @@ NODE_ENV=development
 JWT_SECRET=your_secure_secret_key_here
 
 # Application Settings
-APP_NAME=GreenMe
+APP_NAME=GreenMates
 COMPANY_NAME=RM Architettura e Consulenza Bandi
 COMPANY_LOCATION=Pavia
 
@@ -323,4 +323,4 @@ Nell'ambito del progetto di innovazione di processo e sociale per la conformità
 
 ---
 
-**GreenMe** - Trasformare la sostenibilità in un gioco, misurare l'impatto reale. 🌱
+**GreenMates** - Trasformare la sostenibilità in un gioco, misurare l'impatto reale. 🌱

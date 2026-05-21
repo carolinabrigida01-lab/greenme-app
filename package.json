@@ -1,7 +1,7 @@
 {
-  "name": "greenme-app",
+  "name": "greenmates-app",
   "version": "1.0.0",
-  "description": "GreenMe - Employee Sustainability & Volunteering Gamification App",
+  "description": "GreenMates - Employee Sustainability & Volunteering Gamification App",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
