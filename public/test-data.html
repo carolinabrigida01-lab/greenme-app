@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Dati GreenMates</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 { color: #2ecc71; }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th { background: #2ecc71; color: white; }
+        button {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #27ae60; }
+        .loading { color: #3498db; }
+    </style>
+</head>
+<body>
+    <h1>🌱 Test Dati GreenMates</h1>
+    
+    <div class="section">
+        <h2>Stato Server</h2>
+        <p id="serverStatus" class="loading">Verificando...</p>
+    </div>
+
+    <div class="section">
+        <h2>Login Test</h2>
+        <button onclick="testLogin()">Test Login</button>
+        <p id="loginStatus"></p>
+        <div id="loginData"></div>
+    </div>
+
+    <div class="section">
+        <h2>Dipendenti</h2>
+        <button onclick="loadEmployees()">Carica Dipendenti</button>
+        <p id="employeesStatus"></p>
+        <div id="employeesData"></div>
+    </div>
+
+    <div class="section">
+        <h2>Dashboard</h2>
+        <button onclick="loadDashboard()">Carica Dashboard</button>
+        <p id="dashboardStatus"></p>
+        <div id="dashboardData"></div>
+    </div>
+
+    <div class="section">
+        <h2>Carbon Footprint</h2>
+        <button onclick="loadCarbon()">Carica Tracciamenti</button>
+        <p id="carbonStatus"></p>
+        <div id="carbonData"></div>
+    </div>
+
+    <div class="section">
+        <h2>Volontariato</h2>
+        <button onclick="loadVolunteering()">Carica Attività</button>
+        <p id="volunteeringStatus"></p>
+        <div id="volunteeringData"></div>
+    </div>
+
+    <script>
+        let token = null;
+        const API_URL = 'http://localhost:3000/api';
+
+        // Check server status
+        async function checkServer() {
+            try {
+                const response = await fetch('http://localhost:3000');
+                if (response.ok) {
+                    document.getElementById('serverStatus').innerHTML = '<span class="success">✅ Server attivo</span>';
+                } else {
+                    document.getElementById('serverStatus').innerHTML = '<span class="error">❌ Server non risponde</span>';
+                }
+            } catch (error) {
+                document.getElementById('serverStatus').innerHTML = '<span class="error">❌ Errore: ' + error.message + '</span>';
+            }
+        }
+
+        async function testLogin() {
+            const status = document.getElementById('loginStatus');
+            const data = document.getElementById('loginData');
+            status.innerHTML = '<span class="loading">Caricamento...</span>';
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'admin@rm-architettura.it',
+                        password: 'admin123'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    token = result.token;
+                    status.innerHTML = '<span class="success">✅ Login riuscito!</span>';
+                    data.innerHTML = `
+                        <p><strong>Nome:</strong> ${result.employee.firstName} ${result.employee.lastName}</p>
+                        <p><strong>Email:</strong> ${result.employee.email}</p>
+                        <p><strong>Ruolo:</strong> ${result.employee.role}</p>
+                        <p><strong>Punti:</strong> ${result.employee.points}</p>
+                        <p><strong>Livello:</strong> ${result.employee.level}</p>
+                    `;
+                } else {
+                    status.innerHTML = '<span class="error">❌ Login fallito: ' + result.error + '</span>';
+                }
+            } catch (error) {
+                status.innerHTML = '<span class="error">❌ Errore: ' + error.message + '</span>';
+            }
+        }
+
+        async function loadEmployees() {
+            if (!token) {
+                alert('Fai prima il login!');
+                return;
+            }
+            
+            const status = document.getElementById('employeesStatus');
+            const data = document.getElementById('employeesData');
+            status.innerHTML = '<span class="loading">Caricamento...</span>';
+            
+            try {
+                const response = await fetch(`${API_URL}/employees`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    status.innerHTML = `<span class="success">✅ Trovati ${result.employees.length} dipendenti</span>`;
+                    
+                    let html = '<table><tr><th>Nome</th><th>Email</th><th>Dipartimento</th><th>Punti</th><th>Livello</th></tr>';
+                    result.employees.forEach(emp => {
+                        html += `<tr>
+                            <td>${emp.firstName} ${emp.lastName}</td>
+                            <td>${emp.email}</td>
+                            <td>${emp.department}</td>
+                            <td>${emp.points}</td>
+                            <td>${emp.level}</td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    data.innerHTML = html;
+                } else {
+                    status.innerHTML = '<span class="error">❌ Errore: ' + result.error + '</span>';
+                }
+            } catch (error) {
+                status.innerHTML = '<span class="error">❌ Errore: ' + error.message + '</span>';
+            }
+        }
+
+        async function loadDashboard() {
+            if (!token) {
+                alert('Fai prima il login!');
+                return;
+            }
+            
+            const status = document.getElementById('dashboardStatus');
+            const data = document.getElementById('dashboardData');
+            status.innerHTML = '<span class="loading">Caricamento...</span>';
+            
+            try {
+                const response = await fetch(`${API_URL}/dashboard/overview`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    const stats = result.overview.stats;
+                    status.innerHTML = '<span class="success">✅ Dashboard caricata</span>';
+                    data.innerHTML = `
+                        <p><strong>CO2 Risparmiata:</strong> ${stats.totalCO2Saved} kg</p>
+                        <p><strong>Ore Volontariato:</strong> ${stats.totalVolunteerHours} ore</p>
+                        <p><strong>Badge Ottenuti:</strong> ${stats.totalBadges}</p>
+                        <p><strong>Sfide Attive:</strong> ${stats.activeChallenges}</p>
+                    `;
+                } else {
+                    status.innerHTML = '<span class="error">❌ Errore: ' + result.error + '</span>';
+                }
+            } catch (error) {
+                status.innerHTML = '<span class="error">❌ Errore: ' + error.message + '</span>';
+            }
+        }
+
+        async function loadCarbon() {
+            if (!token) {
+                alert('Fai prima il login!');
+                return;
+            }
+            
+            const status = document.getElementById('carbonStatus');
+            const data = document.getElementById('carbonData');
+            status.innerHTML = '<span class="loading">Caricamento...</span>';
+            
+            try {
+                const response = await fetch(`${API_URL}/carbon-footprint/entries`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    status.innerHTML = `<span class="success">✅ Trovati ${result.entries.length} tracciamenti</span>`;
+                    
+                    let html = '<table><tr><th>Data</th><th>Mezzo</th><th>Distanza</th><th>CO2 Risparmiata</th><th>Punti</th></tr>';
+                    result.entries.slice(0, 10).forEach(entry => {
+                        html += `<tr>
+                            <td>${entry.date}</td>
+                            <td>${entry.transportMode}</td>
+                            <td>${entry.distance} km</td>
+                            <td>${entry.co2Saved} kg</td>
+                            <td>${entry.points}</td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    data.innerHTML = html;
+                } else {
+                    status.innerHTML = '<span class="error">❌ Errore: ' + result.error + '</span>';
+                }
+            } catch (error) {
+                status.innerHTML = '<span class="error">❌ Errore: ' + error.message + '</span>';
+            }
+        }
+
+        async function loadVolunteering() {
+            if (!token) {
+                alert('Fai prima il login!');
+                return;
+            }
+            
+            const status = document.getElementById('volunteeringStatus');
+            const data = document.getElementById('volunteeringData');
+            status.innerHTML = '<span class="loading">Caricamento...</span>';
+            
+            try {
+                const response = await fetch(`${API_URL}/volunteering/activities`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    status.innerHTML = `<span class="success">✅ Trovate ${result.activities.length} attività</span>`;
+                    
+                    let html = '<table><tr><th>Data</th><th>Attività</th><th>Ore</th><th>Luogo</th><th>Punti</th></tr>';
+                    result.activities.slice(0, 10).forEach(activity => {
+                        html += `<tr>
+                            <td>${activity.date}</td>
+                            <td>${activity.activityName}</td>
+                            <td>${activity.hours}</td>
+                            <td>${activity.location}</td>
+                            <td>${activity.points}</td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    data.innerHTML = html;
+                } else {
+                    status.innerHTML = '<span class="error">❌ Errore: ' + result.error + '</span>';
+                }
+            } catch (error) {
+                status.innerHTML = '<span class="error">❌ Errore: ' + error.message + '</span>';
+            }
+        }
+
+        // Check server on load
+        checkServer();
+    </script>
+</body>
+</html>
