@@ -1,22 +1,32 @@
 // API Configuration
 const API_BASE_URL = window.location.origin + '/api';
-let authToken = 'demo-token'; // Fake token for demo mode
-let currentUser = {
-    id: '1',
-    email: 'admin@rm-architettura.it',
-    firstName: 'Mario',
-    lastName: 'Rossi',
-    role: 'admin',
-    department: 'Direzione',
-    points: 2850,
-    level: 3
-};
+let authToken = null;
+let currentUser = null;
 
-// Initialize app immediately
+// Auto-login in background (invisible to user)
 async function initializeApp() {
-    console.log('Initializing app with demo user...');
-    showApp();
-    await loadDashboard();
+    try {
+        console.log('Auto-login in progress...');
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: 'admin@rm-architettura.it',
+                password: 'admin123'
+            })
+        });
+        
+        const data = await response.json();
+        authToken = data.token;
+        currentUser = data.employee;
+        
+        console.log('Auto-login successful, loading dashboard...');
+        showApp();
+        await loadDashboard();
+    } catch (error) {
+        console.error('Auto-login failed:', error);
+        document.body.innerHTML = '<div style="padding: 50px; text-align: center;"><h1>Errore di caricamento</h1><p>Impossibile caricare i dati. Ricarica la pagina.</p></div>';
+    }
 }
 
 // Utility Functions
