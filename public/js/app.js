@@ -65,19 +65,23 @@ async function apiCall(endpoint, options = {}) {
 // Authentication
 async function login(email, password) {
     try {
+        console.log('Attempting login...');
         const data = await apiCall('/auth/login', {
             method: 'POST',
             body: JSON.stringify({ email, password })
         });
 
+        console.log('Login successful:', data.employee);
         authToken = data.token;
         currentUser = data.employee;
         localStorage.setItem('authToken', authToken);
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
         showApp();
-        loadDashboard();
+        await loadDashboard();
+        console.log('Dashboard loaded');
     } catch (error) {
+        console.error('Login error:', error);
         showError(error.message);
     }
 }
@@ -151,7 +155,9 @@ function showPage(pageName) {
 // Dashboard
 async function loadDashboard() {
     try {
+        console.log('Loading dashboard...');
         const data = await apiCall('/dashboard/overview');
+        console.log('Dashboard data received:', data);
         const overview = data.overview;
 
         // Update stats
