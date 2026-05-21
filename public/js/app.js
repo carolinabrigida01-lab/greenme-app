@@ -1,29 +1,22 @@
 // API Configuration
 const API_BASE_URL = window.location.origin + '/api';
-let authToken = null;
-let currentUser = null;
+let authToken = 'demo-token'; // Fake token for demo mode
+let currentUser = {
+    id: '1',
+    email: 'admin@rm-architettura.it',
+    firstName: 'Mario',
+    lastName: 'Rossi',
+    role: 'admin',
+    department: 'Direzione',
+    points: 2850,
+    level: 3
+};
 
-// Auto-login as admin on page load
-async function autoLogin() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email: 'admin@rm-architettura.it',
-                password: 'admin123'
-            })
-        });
-        
-        const data = await response.json();
-        authToken = data.token;
-        currentUser = data.employee;
-        
-        showApp();
-        await loadDashboard();
-    } catch (error) {
-        console.error('Auto-login failed:', error);
-    }
+// Initialize app immediately
+async function initializeApp() {
+    console.log('Initializing app with demo user...');
+    showApp();
+    await loadDashboard();
 }
 
 // Utility Functions
@@ -85,47 +78,10 @@ async function apiCall(endpoint, options = {}) {
     }
 }
 
-// Authentication
-async function login(email, password) {
-    try {
-        console.log('Attempting login...');
-        const data = await apiCall('/auth/login', {
-            method: 'POST',
-            body: JSON.stringify({ email, password })
-        });
-
-        console.log('Login successful:', data.employee);
-        authToken = data.token;
-        currentUser = data.employee;
-        localStorage.setItem('authToken', authToken);
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-        showApp();
-        await loadDashboard();
-        console.log('Dashboard loaded');
-    } catch (error) {
-        console.error('Login error:', error);
-        showError(error.message);
-    }
-}
-
-function logout() {
-    authToken = null;
-    currentUser = null;
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('currentUser');
-    showLogin();
-}
+// No authentication needed - demo mode
 
 // Screen Management
-function showLogin() {
-    document.getElementById('loginScreen').classList.add('active');
-    document.getElementById('appScreen').classList.remove('active');
-}
-
 function showApp() {
-    document.getElementById('loginScreen').classList.remove('active');
-    document.getElementById('appScreen').classList.add('active');
     updateUserInfo();
 }
 
@@ -138,13 +94,6 @@ function updateUserInfo() {
 
 // Page Navigation
 function showPage(pageName) {
-    // Check if user is logged in
-    if (!authToken) {
-        console.log('Waiting for auto-login to complete...');
-        setTimeout(() => showPage(pageName), 500);
-        return;
-    }
-
     // Hide all pages
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
@@ -609,19 +558,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('appScreen').style.display = 'block';
     
-    // Auto-login as admin
-    autoLogin();
+    // Initialize app with demo user
+    initializeApp();
 
-    // Login form
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        login(email, password);
-    });
-
-    // Logout button
-    document.getElementById('logoutBtn').addEventListener('click', logout);
+    // No login/logout needed in demo mode
 
     // Navigation
     document.querySelectorAll('.nav-item').forEach(item => {
