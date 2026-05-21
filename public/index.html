@@ -8,36 +8,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Login Screen -->
-    <div id="loginScreen" class="screen active">
+    <!-- Login Screen - Hidden, auto-login enabled -->
+    <div id="loginScreen" class="screen" style="display: none;">
         <div class="login-container">
             <div class="login-header">
                 <div class="logo">🌱</div>
                 <h1>GreenMates</h1>
-                <p>RM Architettura e Consulenza Bandi</p>
-            </div>
-            <form id="loginForm" class="login-form">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required placeholder="tuo@email.it">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required placeholder="••••••••">
-                </div>
-                <button type="submit" class="btn btn-primary">Accedi</button>
-                <div id="loginError" class="error-message"></div>
-            </form>
-            <div class="login-hint">
-                <p><strong>Credenziali di test:</strong></p>
-                <p>Email: admin@rm-architettura.it</p>
-                <p>Password: admin123</p>
+                <p>Caricamento...</p>
             </div>
         </div>
     </div>
 
     <!-- Main App Screen -->
-    <div id="appScreen" class="screen">
+    <div id="appScreen" class="screen active">
         <!-- Navigation -->
         <nav class="navbar">
             <div class="nav-brand">

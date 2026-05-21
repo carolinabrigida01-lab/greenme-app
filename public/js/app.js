@@ -1,7 +1,30 @@
 // API Configuration
 const API_BASE_URL = window.location.origin + '/api';
-let authToken = localStorage.getItem('authToken');
-let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+let authToken = null;
+let currentUser = null;
+
+// Auto-login as admin on page load
+async function autoLogin() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: 'admin@rm-architettura.it',
+                password: 'admin123'
+            })
+        });
+        
+        const data = await response.json();
+        authToken = data.token;
+        currentUser = data.employee;
+        
+        showApp();
+        await loadDashboard();
+    } catch (error) {
+        console.error('Auto-login failed:', error);
+    }
+}
 
 // Utility Functions
 function showError(message) {
@@ -575,16 +598,12 @@ async function autoLoginDevelopment() {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-    // Always show app immediately
+    // Hide login screen and show app immediately
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('appScreen').style.display = 'block';
     
-    // Then do auto-login in background
-    if (!authToken) {
-        autoLoginDevelopment();
-    } else {
-        loadDashboard();
-    }
+    // Auto-login as admin
+    autoLogin();
 
     // Login form
     document.getElementById('loginForm').addEventListener('submit', (e) => {
